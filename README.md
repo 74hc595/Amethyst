@@ -39,6 +39,6 @@ Amethyst is a hobby project and is not currently available for purchase in kit o
 
 Copyright 2019 Matt Sarnoff.
 
-twitter.com/txsector
+https://twitter.com/txsector
 
-msarnoff.org
+http://msarnoff.org
