@@ -1,0 +1,39 @@
+; CHAR ( -- c ) push first character of the following word in the input stream
+dictentry_colon "CHAR"
+op parsename    ; get a word
+op drop         ; ignore length
+op cfetch       ; get first character and push
+dictentryend
+
+; [CHAR] ( -- ) compile literal with value of the first character of the
+; following word in the input stream
+dictentry_compileonly "[CHAR]"
+op parsename    ; get a word
+op drop         ; ignore length
+op litccomma
+.byte OP_lit8   ; compile (C#) prefix
+op cfetch       ; get first character
+op ccomma       ; compile value into code, finishing literal
+dictentryend
+
+; .( - print inline string immediately
+dictentry_immediate ".("
+; consume up to ) then TYPE
+l8 0x29         ; get up to right-paren
+op parse        ; get addr/len
+op type         ; write to screen
+dictentryend
+
+; comment; discard characters from TIB up to and including the first )
+dictentry_immediate "("
+l8 ')'
+op parse
+op twodrop
+dictentryend
+
+; comment; discard characters from TIB up to and including newline
+dictentry_immediate "\\"
+l8 '\n'
+op parse
+op twodrop
+dictentryend

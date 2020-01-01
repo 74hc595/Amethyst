@@ -1,0 +1,5 @@
+(fp_lib_table
+  (lib (name avr-isp-6)(type KiCad)(uri ${KIPRJMOD}/avr-isp-6.pretty)(options "")(descr ""))
+  (lib (name rca)(type KiCad)(uri ${KIPRJMOD}/rca.pretty)(options "")(descr ""))
+  (lib (name 6-pin-smd)(type KiCad)(uri ${KIPRJMOD}/6-pin-smd.pretty)(options "")(descr ""))
+)

@@ -1,0 +1,130 @@
+#include "keycodes.h"
+
+; UNTIL-KEY ( -- ) loop until any key is pressed (pair with BEGIN)
+dictentry_compileonly "UNTIL-KEY"
+op litccomma
+.byte OP_ext
+op litccomma
+.byte OPX_keyq
+mark zbranchback        ; compile dummy (0BRANCH) instruction
+opx bresolve            ; resolve backward branch
+dictentryend
+
+; Constants for extended character codes
+
+.macro specialkeycharword, name, k
+  dictentry_colon "'\name"
+  l8 \k
+  dictentryend
+.endm
+
+#define SPECIALKEYCHARWORD(k) specialkeycharword #k, KC_##k
+SPECIALKEYCHARWORD(BKSP)
+SPECIALKEYCHARWORD(TAB)
+SPECIALKEYCHARWORD(ESC)
+SPECIALKEYCHARWORD(DEL)
+;SPECIALKEYCHARWORD(ENTER)
+SPECIALKEYCHARWORD(UP)
+SPECIALKEYCHARWORD(DOWN)
+SPECIALKEYCHARWORD(RIGHT)
+SPECIALKEYCHARWORD(LEFT)
+SPECIALKEYCHARWORD(HOME)
+SPECIALKEYCHARWORD(END)
+SPECIALKEYCHARWORD(PGUP)
+SPECIALKEYCHARWORD(PGDN)
+SPECIALKEYCHARWORD(F1)
+SPECIALKEYCHARWORD(F2)
+SPECIALKEYCHARWORD(F3)
+
+; CTRL- ( -- c ) push first character of the following word in the input stream,
+; with the upper 3 bits masked off
+dictentry_colon "CTRL-"
+op parsename    ; get a word
+op drop         ; ignore length
+op cfetch       ; get first character and push
+op candlit
+.byte 0b00011111
+dictentryend
+
+; [CTRL-] ( -- ) compile literal with value of the first character of the
+; following word in the input stream, with the upper 3 bits masked off
+dictentry_compileonly "[CTRL-]"
+op parsename    ; get a word
+op drop         ; ignore length
+op litccomma
+.byte OP_lit8   ; compile (C#) prefix
+op cfetch       ; get first character
+op candlit
+.byte 0b00011111
+op ccomma       ; compile value into code, finishing literal
+dictentryend
+
+
+
+; Raw scan matrix codes
+
+.macro scancodeword, name, row, col
+  dictentry_colon "K-\name"
+  l16 1<<\col, \row
+  dictentryend
+.endm
+
+
+#define SCANCODEWORD(k) scancodeword #k, K_##k##_ROW, K_##k##_COL
+
+SCANCODEWORD(A)
+SCANCODEWORD(B)
+SCANCODEWORD(C)
+SCANCODEWORD(D)
+SCANCODEWORD(E)
+SCANCODEWORD(F)
+SCANCODEWORD(G)
+SCANCODEWORD(H)
+SCANCODEWORD(I)
+SCANCODEWORD(J)
+SCANCODEWORD(K)
+SCANCODEWORD(L)
+SCANCODEWORD(M)
+SCANCODEWORD(N)
+SCANCODEWORD(O)
+SCANCODEWORD(P)
+SCANCODEWORD(Q)
+SCANCODEWORD(R)
+SCANCODEWORD(S)
+SCANCODEWORD(T)
+SCANCODEWORD(U)
+SCANCODEWORD(V)
+SCANCODEWORD(W)
+SCANCODEWORD(X)
+SCANCODEWORD(Y)
+SCANCODEWORD(Z)
+SCANCODEWORD(ESC)
+SCANCODEWORD(DEL)
+SCANCODEWORD(SPACE)
+SCANCODEWORD(ENTER)
+SCANCODEWORD(CTRL)
+SCANCODEWORD(SHIFT)
+SCANCODEWORD(SYM)
+SCANCODEWORD(UP)
+SCANCODEWORD(LEFT)
+SCANCODEWORD(RIGHT)
+SCANCODEWORD(DOWN)
+#if KEYBOARD_LAYOUT_1_0
+SCANCODEWORD(QUOTE)
+SCANCODEWORD(SLASH)
+SCANCODEWORD(MINUS)
+SCANCODEWORD(EQUAL)
+SCANCODEWORD(COMMA)
+SCANCODEWORD(DOT)
+#else
+SCANCODEWORD(1)
+SCANCODEWORD(2)
+SCANCODEWORD(3)
+SCANCODEWORD(4)
+SCANCODEWORD(5)
+SCANCODEWORD(6)
+SCANCODEWORD(7)
+SCANCODEWORD(8)
+SCANCODEWORD(9)
+SCANCODEWORD(0)
+#endif

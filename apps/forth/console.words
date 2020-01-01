@@ -1,0 +1,85 @@
+dictentry_colon "+CURSOR"
+op minus1
+op cstorebitshi
+.byte fcon_bitmask_cursorphase
+.byte HIGHADDR(fcon_cursorphase)
+dictentryend
+
+dictentry_colon "-CURSOR"
+op zero
+op cstorebitshi
+.byte fcon_bitmask_cursorphase
+.byte HIGHADDR(fcon_cursorphase)
+dictentryend
+
+dictentry_colon "SLOW"
+op minus1
+op cstorebitshi
+.byte fcon_bitmask_slow
+.byte HIGHADDR(fcon_slow)
+dictentryend
+
+dictentry_colon "FAST"
+op zero
+op cstorebitshi
+.byte fcon_bitmask_slow
+.byte HIGHADDR(fcon_slow)
+dictentryend
+
+dictentry_colon "+RVS"
+op minus1
+op cstorebitshi
+.byte fcon_bitmask_rvs
+.byte HIGHADDR(fcon_rvs)
+dictentryend
+
+dictentry_colon "-RVS"
+op zero
+op cstorebitshi
+.byte fcon_bitmask_rvs
+.byte HIGHADDR(fcon_rvs)
+dictentryend
+
+dictentry_colon "XY>CADDR"
+opx xytoaddr
+laddr 1000
+op plus
+dictentryend
+
+dictentry_colon "THLIN"
+op lowbyte
+opx tbox
+dictentryend
+
+dictentry_colon "TVLIN"
+op twofivesixstar
+opx tbox
+dictentryend
+
+dictentry_colon "-WINDOW"
+op zero
+op zero
+opx window
+dictentryend
+
+dictentry_colon "FRAMES"
+dictentryend
+
+dictentry_colon "FRAME"
+dictentryend
+
+dictentry_colon "SECOND"
+l8 60
+opx star
+dictentryend
+
+dictentry_colon "SECONDS"
+l8 60
+opx star
+dictentryend
+
+dictentry_colon "MS"
+l8 60
+laddr 1000
+opx starslash
+dictentryend

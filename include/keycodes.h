@@ -1,0 +1,215 @@
+#ifndef KEYCODES_H_
+#define KEYCODES_H_
+
+#include "defs.h"
+#define KEYBOARD_LAYOUT_1_0   (HW_VERSION==AMETHYST_HW_1_0)
+
+#define KC_BKSP   '\b' /* 8 */
+#define KC_TAB    '\t' /* 9 */
+#define KC_ENTER  '\n' /* 10 */
+#define KC_VT     '\v' /* 11 */
+#define KC_CLEAR  '\f' /* 12 */
+#define KC_RET    '\r' /* 13 */
+#define KC_PGUP   14
+#define KC_PGDN   15
+#define KC_F1     16
+#define KC_RIGHT  17
+#define KC_LEFT   18
+#define KC_F2     19
+#define KC_DOWN   20
+#define KC_HOME   21
+#define KC_END    22
+#define KC_F3     23
+#define KC_UP     24
+#define KC_ESC    '\e' /* 27 */
+#define KC_DEL    127
+
+#define KEYMATRIX_ROWS  8
+#define KEYMATRIX_COLS  6
+
+#if KEYBOARD_LAYOUT_1_0
+/* 43-key layout */
+#define K_Q_ROW     0
+#define K_E_ROW     0
+#define K_T_ROW     0
+#define K_U_ROW     0
+#define K_O_ROW     0
+#define K_Q_COL     0
+#define K_E_COL     1
+#define K_T_COL     2
+#define K_U_COL     3
+#define K_O_COL     4
+#define K_SYM_ROW   1
+#define K_EQUAL_ROW 1
+#define K_COMMA_ROW 1
+#define K_LEFT_ROW  1
+#define K_RIGHT_ROW 1
+#define K_SYM_COL   0
+#define K_EQUAL_COL 1
+#define K_COMMA_COL 2
+#define K_LEFT_COL  3
+#define K_RIGHT_COL 4
+#define K_Z_ROW     2
+#define K_C_ROW     2
+#define K_B_ROW     2
+#define K_M_ROW     2
+#define K_UP_ROW    2
+#define K_Z_COL     0
+#define K_C_COL     1
+#define K_B_COL     2
+#define K_M_COL     3
+#define K_UP_COL    4
+#define K_A_ROW     3
+#define K_D_ROW     3
+#define K_G_ROW     3
+#define K_J_ROW     3
+#define K_L_ROW     3
+#define K_A_COL     0
+#define K_D_COL     1
+#define K_G_COL     2
+#define K_J_COL     3
+#define K_L_COL     4
+#define K_SHIFT_ROW 4
+#define K_X_ROW     4
+#define K_V_ROW     4
+#define K_N_ROW     4
+#define K_QUOTE_ROW 4
+#define K_DEL_ROW   4
+#define K_SHIFT_COL 0
+#define K_X_COL     1
+#define K_V_COL     2
+#define K_N_COL     3
+#define K_QUOTE_COL 4
+#define K_DEL_COL   5
+#define K_ESC_ROW   5
+#define K_W_ROW     5
+#define K_R_ROW     5
+#define K_Y_ROW     5
+#define K_I_ROW     5
+#define K_P_ROW     5
+#define K_ESC_COL   0
+#define K_W_COL     1
+#define K_R_COL     2
+#define K_Y_COL     3
+#define K_I_COL     4
+#define K_P_COL     5
+#define K_CTRL_ROW  6
+#define K_S_ROW     6
+#define K_F_ROW     6
+#define K_H_ROW     6
+#define K_K_ROW     6
+#define K_ENTER_ROW 6
+#define K_CTRL_COL  0
+#define K_S_COL     1
+#define K_F_COL     2
+#define K_H_COL     3
+#define K_K_COL     4
+#define K_ENTER_COL 5
+#define K_MINUS_ROW 7
+#define K_SPACE_ROW 7
+#define K_DOT_ROW   7
+#define K_DOWN_ROW  7
+#define K_SLASH_ROW 7
+#define K_MINUS_COL 0
+#define K_SPACE_COL 1
+#define K_DOT_COL   2
+#define K_DOWN_COL  3
+#define K_SLASH_COL 4
+#else
+/* 47-key layout */
+#define K_ESC_ROW   0
+#define K_ESC_COL   0
+#define K_1_ROW     5
+#define K_1_COL     0
+#define K_2_ROW     0
+#define K_2_COL     1
+#define K_3_ROW     5
+#define K_3_COL     1
+#define K_4_ROW     0
+#define K_4_COL     2
+#define K_5_ROW     5
+#define K_5_COL     2
+#define K_6_ROW     0
+#define K_6_COL     3
+#define K_7_ROW     5
+#define K_7_COL     3
+#define K_8_ROW     0
+#define K_8_COL     4
+#define K_9_ROW     5
+#define K_9_COL     4
+#define K_0_ROW     0
+#define K_0_COL     5
+#define K_DEL_ROW   5
+#define K_DEL_COL   5
+#define K_CTRL_ROW  6
+#define K_CTRL_COL  0
+#define K_Q_ROW     4
+#define K_Q_COL     0
+#define K_W_ROW     6
+#define K_W_COL     1
+#define K_E_ROW     4
+#define K_E_COL     1
+#define K_R_ROW     6
+#define K_R_COL     2
+#define K_T_ROW     4
+#define K_T_COL     2
+#define K_Y_ROW     6
+#define K_Y_COL     3
+#define K_U_ROW     4
+#define K_U_COL     3
+#define K_I_ROW     6
+#define K_I_COL     4
+#define K_O_ROW     4
+#define K_O_COL     4
+#define K_P_ROW     6
+#define K_P_COL     5
+#define K_SPACE_ROW 4
+#define K_SPACE_COL 5
+#define K_SHIFT_ROW 3
+#define K_SHIFT_COL 0
+#define K_A_ROW     7
+#define K_A_COL     0
+#define K_S_ROW     3
+#define K_S_COL     1
+#define K_D_ROW     7
+#define K_D_COL     1
+#define K_F_ROW     3
+#define K_F_COL     2
+#define K_G_ROW     7
+#define K_G_COL     2
+#define K_H_ROW     3
+#define K_H_COL     3
+#define K_J_ROW     7
+#define K_J_COL     3
+#define K_K_ROW     3
+#define K_K_COL     4
+#define K_L_ROW     7
+#define K_L_COL     4
+#define K_UP_ROW    3
+#define K_UP_COL    5
+#define K_ENTER_ROW 7
+#define K_ENTER_COL 5
+#define K_SYM_ROW   2
+#define K_SYM_COL   0
+#define K_Z_ROW     2
+#define K_Z_COL     1
+#define K_X_ROW     1
+#define K_X_COL     1
+#define K_C_ROW     2
+#define K_C_COL     2
+#define K_V_ROW     1
+#define K_V_COL     2
+#define K_B_ROW     2
+#define K_B_COL     3
+#define K_N_ROW     1
+#define K_N_COL     3
+#define K_M_ROW     2
+#define K_M_COL     4
+#define K_LEFT_ROW  1
+#define K_LEFT_COL  4
+#define K_DOWN_ROW  2
+#define K_DOWN_COL  5
+#define K_RIGHT_ROW 1
+#define K_RIGHT_COL 5
+#endif
+#endif

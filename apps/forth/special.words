@@ -1,0 +1,103 @@
+
+dictheader "IS"
+.word pm(romdict_interpret_bytecode)
+.word pm(romdict_interpret_bytecode_compsem)
+dictentry_interpretation_semantics
+        op parsename            ; ( xt name-addr name-len ) push string addr/len on stack
+        ccall find_defer        ; ( xt name-addr xt-addr )  get address of old xt or throw if name isn't valid
+        op nip                  ; ( xt xt-addr )            don't need string addr on stack anymore
+        op store
+dictentry_compilation_semantics
+        op parsename
+        ccall find_defer
+        op nip
+        op litccomma            ; compile a "store literal" instruction
+        .byte OP_storelit
+        op comma
+dictentryend
+
+
+dictheader "TO"
+.word pm(romdict_interpret_bytecode)
+.word pm(romdict_interpret_bytecode_compsem)
+dictentry_interpretation_semantics
+; returns a flag indicating if it consumed two words. throws an exception if word isn't a VALUE/2VALUE
+        ccall interpret_to
+        op zbranchfwd
+        .byte 1
+        op drop
+dictentry_compilation_semantics
+        op zero ; ccall always consumes TOS
+        ccall compile_to
+        op drop
+dictentryend
+
+; S" - compile inline string
+dictheader "S\x22"
+.word pm(romdict_interpret_bytecode)
+.word pm(romdict_interpret_bytecode_compsem)
+dictentry_interpretation_semantics
+        opx parsequote          ; get addr/len
+dictentry_compilation_semantics
+        opx parsequote          ; get addr/len - stack is now ( srcaddr len )
+        ccall compile_string    ; stack is now ( srcaddr flag )
+        op twodrop
+dictentryend
+
+; S\" - compile inline string, parsing escape sequences
+dictheader "S\\\x22"
+.word pm(romdict_interpret_bytecode)
+.word pm(romdict_interpret_bytecode_compsem)
+dictentry_interpretation_semantics
+        opx parseslashquote             ; get addr/len
+dictentry_compilation_semantics
+        opx parseslashquote      ; get addr/len - stack is now ( srcaddr len )
+        ccall compile_string            ; stack is now ( srcaddr flag )
+        op twodrop
+dictentryend
+
+
+; C" - create counted string in temporary buffer
+; Ensure there is enough space in for the string.
+; This implementation uses the pictured numeric output buffer for temporary storage.
+dictheader "C\x22"
+.word pm(romdict_interpret_bytecode)
+.word pm(romdict_interpret_bytecode_compsem)
+dictentry_interpretation_semantics
+        l8 0x22
+        opx word
+dictentry_compilation_semantics
+        opx parsequote          ; get addr/len - stack is now ( srcaddr len )
+        ccall compile_cquote    ; stack is now ( srcaddr flag )
+        op twodrop
+dictentryend
+
+
+; ." - print inline string
+dictheader ".\x22"
+.word pm(romdict_interpret_bytecode)
+.word pm(romdict_interpret_bytecode_compsem)
+dictentry_interpretation_semantics
+        ; consume up to first " char then TYPE
+        opx parsequote  ; get addr/len
+        op type         ; write to screen
+dictentry_compilation_semantics
+        opx parsequote  ; get addr/len - stack is now ( srcaddr len )
+        ccall compile_dotquote  ; stack is now ( srcaddr flag )
+        op twodrop
+dictentryend
+
+; ACTION-OF ( -- xt ) get the xt that is assigned to a DEFERred word
+; TODO probably add more error checking
+dictheader "ACTION-OF"
+.word pm(romdict_interpret_bytecode)
+.word pm(romdict_interpret_bytecode_compsem)
+dictentry_interpretation_semantics
+        op tick
+        opx tobody
+        op fetch
+dictentry_compilation_semantics
+        op tick         ; get xt (or break if not found)
+        ccall compile_action_of
+        op drop
+dictentryend

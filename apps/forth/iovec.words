@@ -1,0 +1,23 @@
+dictentry_colon "SERIAL-IN"
+op lit16
+.word pm(serial_mio_getc)
+.byte OP_storelithi, HIGHADDR(mio_getc)
+dictentryend
+
+dictentry_colon "SERIAL-OUT"
+op lit16
+.word pm(serial_mio_putc)
+.byte OP_storelithi, HIGHADDR(mio_putc)
+dictentryend
+
+dictentry_colon "KEYBOARD-IN"
+op lit16
+.word pm(fcon_mio_getc)
+.byte OP_storelithi, HIGHADDR(mio_getc)
+dictentryend
+
+dictentry_colon "VIDEO-OUT"
+op lit16
+.word pm(fcon_mio_putc)
+.byte OP_storelithi, HIGHADDR(mio_putc)
+dictentryend

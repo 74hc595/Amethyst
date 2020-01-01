@@ -1,0 +1,72 @@
+dictentry_colon ".S"
+opx dumpstack
+.byte -1
+dictentryend
+
+dictentry_colon "U.S"
+opx dumpstack
+.byte 1
+dictentryend
+
+dictentry_colon "H.S"
+opx dumpstack
+.byte 0
+dictentryend
+
+dictentry_immediate "[.S]"
+opx dumpstack
+.byte -1
+dictentryend
+
+dictentry_immediate "[U.S]"
+opx dumpstack
+.byte 1
+dictentryend
+
+dictentry_immediate "[H.S]"
+opx dumpstack
+.byte 0
+dictentryend
+
+dictheader "WORDS"
+cfunc_interpret_only dict_print_words
+dictentryend
+
+dictentry_interpretonly "DUMP"
+ccall hexdump_range
+op twodrop
+dictentryend
+
+dictheader "DESCRIBE"
+cfunc_interpret_only do_describe
+dictentryend
+
+dictheader "SEE"
+cfunc_interpret_only do_see
+dictentryend
+
+dictheader "DEBUG"
+cfunc_interpret_only debug_enter
+dictentryend
+
+dictheader "RESUME"
+cfunc_interpret_only debug_exit
+dictentryend
+
+dictheader "TRACE"
+cfunc_interpret_only debug_trace
+dictentryend
+
+; /CODE ( -- u ) number of bytes of used code space
+dictentry_colon "/CODE"
+.byte OP_fetchlithi, HIGHADDR(forth_cp)
+laddr forth_cp0
+op minus
+dictentryend
+
+; /NAME ( -- u ) number of bytes of used name space
+dictentry_colon "/NAME"
+.byte OP_fetchlithi, HIGHADDR(forth_np)
+.byte OP_fetchlithi, HIGHADDR(forth_np0)
+op minus
+dictentryend

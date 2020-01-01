@@ -1,0 +1,54 @@
+diff --git a/optiboot/bootloaders/optiboot/Makefile.1284 b/optiboot/bootloaders/optiboot/Makefile.1284
+index 78de8e6..113a632 100644
+--- a/optiboot/bootloaders/optiboot/Makefile.1284
++++ b/optiboot/bootloaders/optiboot/Makefile.1284
+@@ -158,3 +158,27 @@ wildfirev3_isp: LFUSE ?= F7
+ # 2.7V brownout
+ wildfirev3_isp: EFUSE ?= FD
+ wildfirev3_isp: isp
++
++
++
++HELPTEXT += "target amethyst    - ATmega1284 (40 pin, 128k) at 14.31818MHz\n"
++amethyst: TARGET = amethyst
++amethyst: MCU_TARGET = atmega1284
++amethyst: AVR_FREQ = 14318182L
++amethyst: LDSECTIONS  = -Wl,--section-start=.text=0x1fc00 -Wl,--section-start=.version=0x1fffe
++amethyst: CFLAGS += -DLED_START_FLASHES=0 -DLED_DATA_FLASH=0 -DLED_START_ON=0 -DLED=B1 -DBIGBOOT
++amethyst: CFLAGS += -DUART=1 -DBAUD_RATE=57600 $(UART_CMD)
++amethyst: $(PROGRAM)_amethyst.hex
++ifndef PRODUCTION
++amethyst: $(PROGRAM)_amethyst.lst
++endif
++
++amethyst_isp: amethyst
++amethyst_isp: ISPTOOL	?= avrispmkII
++amethyst_isp: ISPPORT	?= usb
++amethyst_isp: TARGET = amethyst
++amethyst_isp: MCU_TARGET = atmega1284
++amethyst_isp: HFUSE ?= D6# preserve EEPROM through chip erase and enable bootloader
++amethyst_isp: LFUSE ?= BF# enable CKOUT
++amethyst_isp: EFUSE ?= FF
++amethyst_isp: isp
+diff --git a/optiboot/bootloaders/optiboot/Makefile.isp b/optiboot/bootloaders/optiboot/Makefile.isp
+index 745729f..8eb6519 100644
+--- a/optiboot/bootloaders/optiboot/Makefile.isp
++++ b/optiboot/bootloaders/optiboot/Makefile.isp
+@@ -57,7 +57,7 @@ endif
+ #
+ # avrdude commands to erase chip, unlock memory, and program fuses.
+ #
+-ISPFUSES =	-e -u -U lock:w:0x3f:m $(EFUSE_CMD) \
++ISPFUSES =	-e -u -U lock:w:0xff:m $(EFUSE_CMD) \
+ 	 	-U hfuse:w:0x$(HFUSE):m -U lfuse:w:0x$(LFUSE):m
+ 
+ 
+@@ -66,7 +66,7 @@ ISPFUSES =	-e -u -U lock:w:0x3f:m $(EFUSE_CMD) \
+ # space from accidental SPM writes.  Note: "2f" allows boot section to be read
+ # by the application, which is different than the arduino default.
+ #
+-ISPFLASH =	-U flash:w:$(PROGRAM)_$(TARGET).hex -U lock:w:0x2f:m
++ISPFLASH =	-U flash:w:$(PROGRAM)_$(TARGET).hex -U lock:w:0xcf:m
+ 
+ # There are certain complicated caused by the fact that the default state
+ # of a fuse is a "1" rather than a "0", especially with respect to fuse bits

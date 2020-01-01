@@ -1,0 +1,54 @@
+The Amethyst's design isn't perfect. It has several shortcomings. These
+are some aspects of the design that could be improved:
+
+The luminance levels of the video signal are dependent on the supply voltage.
+Fluctuations and noise on the 5V supply can manifest as flickering changes of
+brightness in the image. This is exacerbated by the fact that the Amethyst has no onboard voltage regulator; it's entirely dependent on the 5V USB supply
+voltage.
+
+I did try to run the system at 3.3V using the 3V3 output of the FTDI chip.
+Technically, at 14.318 MHz, you're running the AVR outside its "safe operating
+area." (See Figure 29-1 in the ATmega1284 datasheet.) Most of the time the
+system would work fine, but writing to the internal EEPROM would cause the CPU
+to lock up or restart. (It is documented in several threads on the avrfreaks
+forums that EEPROM tends to fail when an AVR is overclocked.) However, this
+could have also been due to excessive current draw from the FT230X/FT231X's
+3.3V regulator, which is only rated to deliver 50 mA. It's possible that
+everything might work fine using a dedicated 3.3V LDO.
+
+No fuse or reverse voltage protection on VUSB. Needs better filtering too,
+probably.
+
+Analog video and audio output stages are garbage. My focus was on minimizing
+part count instead of picture quality. I'm sure there's a lot of room for
+improvement here but I'm not much of an analog guy.
+
+No PAL support. I don't think artifact color works with PAL anyway. Your modern
+TV or capture device can probably decode NTSC, though.
+
+Derive the maximum video signal amplitude from the AVR's 2.56V/1.1V analog
+voltage reference at the AREF pin. Along with some 1% resistors, this might
+eliminate the need for the two trimpots VR1 and VR2.
+
+The ortholinear keyboard layout and lack of a spacebar take a while to get
+used to. This was done to minimize board real estate. Sorry if it's not your
+thing.
+
+A major drawback: the video signal is generated in software. The AVR has
+no DMA, which means the CPU needs to be stolen away to bitbang the image out
+to the shift registers during the active video portion of the frame. This only
+leaves about 25% of each frame for updating your program's logic. If you
+wanted to get crazy, you could probably build a dual-processor system. You
+could probably even have two AVRs sharing access to an external SRAM chip. You
+could use a smaller AVR as a 6845 CRT controller--it would only be responsible
+for VRAM address generation, and wouldn't need to be connected to the data
+lines. Or you could use another '1284 as a video coprocessor to accelerate
+blitting and line drawing operations.
+
+The biggest drawback: the AVR can't run native code from SRAM. If you don't
+want to use the Forth bytecode interpreter, loading a new native application
+requires reprogramming the flash memory, which only has a finite number of
+write cycles. An Arm would be better suited, but then (a) it wouldn't be
+"8-bit," and (b) it wouldn't be constructible on a breadboard. (Rest in peace,
+LPC1114FN28.)
+

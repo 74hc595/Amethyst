@@ -1,0 +1,107 @@
+; NOTE: this word returns a *byte* address, must use C@
+dictentry_colon "SCR"
+laddr forth_scr
+dictentryend
+
+dictentry_interpretonly "EDIT"
+ccall edit_block
+opx load
+dictentryend
+
+dictentry_interpretonly "LIST"
+ccall list_block
+op drop
+dictentryend
+
+dictentry_colon "COPY-BLOCK"
+l8 1
+opx copyblocks
+dictentryend
+
+dictentry_colon "FILL-BLOCK"
+l8 1
+op swap
+opx fillblocks
+dictentryend
+
+dictentry_colon "ERASE-BLOCKS"
+l8 0x20 ; fill with blank character
+opx fillblocks
+dictentryend
+
+dictentry_colon "ERASE-BLOCK"
+l8 1
+op zero
+opx fillblocks
+dictentryend
+
+; ED ( -- ) edit last block listed/edited
+dictentry_interpretonly "ED"
+.byte OP_cfetchlithi, HIGHADDR(forth_scr)
+ccall edit_block
+opx load
+dictentryend
+
+; LD ( -- ) load last block listed/edited
+dictentry_colon "LD"
+.byte OP_cfetchlithi, HIGHADDR(forth_scr)
+opx load
+dictentryend
+
+; Bytes per block (from gforth)
+dictentry_colon "CHARS/BLOCK"
+laddr BLOCK_SIZE
+dictentryend
+
+; Bytes per block (alias)
+dictentry_colon "/BLOCK"
+laddr BLOCK_SIZE
+dictentryend
+
+; Number of blocks in internal EEPROM
+dictentry_colon "#EE-BLOCKS"
+l8 NUM_EEPROM_BLOCKS
+dictentryend
+
+; Block lines per screen (from gforth)
+dictentry_colon "L/S"
+l8 LINES_PER_BLOCK
+dictentryend
+
+; Block characters per line (from gforth)
+dictentry_colon "C/L"
+l8 BLOCK_BYTES_PER_LINE
+dictentryend
+
+; push -1 if input source is a string
+; push 0 if input source is a terminal
+; push n>0 if input source is a block
+dictentry_colon "SOURCE-ID"
+.byte OP_cfetchlithi, HIGHADDR(forth_inputsrc)
+op minus1
+.byte OP_cfetchbitshi, 0x80, HIGHADDR(forth_inputsrc+1)
+op select
+dictentryend
+
+dictentry_colon "SAVE-INPUT"
+.byte OP_fetchlithi, HIGHADDR(forth_inputsrc)
+.byte OP_fetchlithi, HIGHADDR(forth_inputlen)   ; fetch length AND position
+dictentryend
+
+dictentry_colon "RESTORE-INPUT"
+.byte OP_storelithi, HIGHADDR(forth_inputlen)   ; store length AND position
+.byte OP_storelithi, HIGHADDR(forth_inputsrc)
+op zero ; push 0 flag indicating the input source was restored
+dictentryend
+
+; Number of the block being interpreted. 0 if input source is not a block.
+dictentry_colon "BLK@"
+.byte OP_cfetchlithi, HIGHADDR(forth_inputsrc)
+op zero
+.byte OP_cfetchbitshi, 0x80, HIGHADDR(forth_inputsrc+1)
+op select
+dictentryend
+
+dictheader "-->"
+cfunc_immediate do_chain_load_next_block
+dictentryend

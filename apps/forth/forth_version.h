@@ -1,0 +1,11 @@
+#ifndef VERSION_H_
+#define VERSION_H_
+
+#define VERSION_MAJOR 0
+#define VERSION_MINOR 9
+#define VERSION_PATCH 2
+#define VERSION_STR XSTR_(VERSION_MAJOR) "." XSTR_(VERSION_MINOR) "." XSTR_(VERSION_PATCH)
+#define PRODUCT_NAME_STR "Ramforth"
+#define COPYRIGHT_STR "(C) 2019 Matt Sarnoff"
+#define TOTAL_MEM_KB  16
+#endif

@@ -1,0 +1,81 @@
+; DOES> ( -- )
+; At compile time: ends the current definition and begins a new anonymous
+; definition in code space. (the parent definition)
+dictheader "DOES>"
+cfunc_compile_only do_compile_does
+.word FL_COLON
+dictentryend
+
+; ::DOES> ( -- )
+; At compile time: ends the current definition and begins a new anonymous
+; definition in name space. (the parent definition)
+dictheader "::DOES>"
+cfunc_compile_only do_compile_does
+.word FL_COMPILER
+dictentryend
+
+; <COMPILES ( -- )
+; Makes the current definition a combined word and indicates the beginning of
+; the custom compilation semantics. The word will not have any interpretation
+; semantics until RUNS> is executed.
+dictheader "<COMPILES"
+cfunc_compile_only do_compiles
+.word 0
+dictentryend
+
+; COMPILE-ONLY ( -- ) makes the just-started definition compile-only
+; Synonym for <COMPILES. Must be used before the word's body is defined, e.g.
+;   : foo COMPILE-ONLY ... ;
+dictheader "COMPILE-ONLY"
+cfunc_compile_only do_compiles  ; turns latest into a combined word
+.word 0                         ; with no interpretation semantics
+dictentryend
+
+; IMMEDIATE ( -- ) makes the just-started definition immediate
+; Deviates from the standard. Must be used before the word's body is defined.
+; This does not work:
+;   : foo ... ; IMMEDIATE
+; Instead you have to do this:
+;   : foo IMMEDIATE ... ;
+dictheader "IMMEDIATE"
+cfunc_compile_only do_compiles  ; turns latest into a combined word
+.word 1                         ; whose interpretation semantics are the compilation semantics
+dictentryend
+
+; RUNS> ( -- )
+; Ends the custom compilation semantics of the current word, and indicates the
+; beginning of the implementation semantics.
+dictheader "RUNS>"
+cfunc_compile_only do_runs
+dictentryend
+
+; ['] ( -- xt ) look up name and compile execution token
+dictentry_compileonly "[']"
+op tick         ; get xt (or break if not found)
+ccall compile_literal
+op drop
+dictentryend
+
+; [COMP'] ( -- ct ) look up name and compile compilation token
+dictentry_compileonly "[COMP']"
+opx comptick    ; get ct (or break if not found)
+ccall compile_literal
+op drop
+dictentryend
+
+; ABORT" ( n -- ) pop TOS; abort and print message if TOS is nonzero
+dictentry_compileonly "ABORT\x22"
+opx parsequote          ; get addr/len - stack is now ( srcaddr len )
+ccall compile_abortq    ; stack is now ( srcaddr flag )
+op twodrop
+dictentryend
+
+dictentry_compileonly "POSTPONE"
+op tick                         ; get xt (or break if not found)
+ccall compile_xt_compsem        ; compile the xt's compilation semantics
+op drop
+dictentryend
+
+dictheader "RECURSE"
+cfunc_compile_only compile_recursive_call
+dictentryend

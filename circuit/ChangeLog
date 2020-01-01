@@ -1,0 +1,24 @@
+Rev 1.2 - December 17, 2019
+===========================
+- Switch back to FT230X, didn't need the extra complexity
+- Move AVRISP/SPI1 switch, add more labels
+- Line up SPI0/SPI1 connectors with Analog connector
+
+Rev 1.1 - September 8, 2019
+===========================
+- Ortholinear 47-key keyboard layout
+- Switch from FT230X to FT231X and connect /RESET to /DTR
+  (circuit based on SparkFun's BOB-13263)
+- Connect /RESET to SPI1 via switch, allowing ISP programming without
+  removing cover
+- Connect AVR PD1 to shift register /CE lines instead of video mixer
+- Changed mounting holes to M2.5 and repositioned
+- Moved +5V/GND testpoints
+- Moved power LED. Now vertically aligned with reset button
+- Empty board space near SPI0 and SPI1 ports may allow for internal
+  expansion boards (SPI EEPROM, etc)
+
+Rev 1.0 - December 7, 2018
+==========================
+Initial board revision
+

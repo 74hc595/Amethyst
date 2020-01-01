@@ -1,0 +1,52 @@
+AVR assembler tips
+==================
+
+The following instructions do NOT modify the SREG flags:
+  - Any jump (JMP, RJMP, IJMP, EIJMP)
+  - Any call (CALL, RCALL, ICALL, EICALL)
+  - Any return (RET, RETI; RETI only modifies I)
+  - Any conditional skip (CPSE, SBRC, SBRS, SBIC, SBIS)
+  - Any branch instruction (BRxx)
+  - Some register operations: LDI, MOV, MOVW, SER, SWAP
+  - Any memory load/store (LD/LDS/LDD, LPM, ELPM, ST/STS/STD, SPM, PUSH, POP)
+  - Any I/O register operation (IN, OUT, SBI, CBI)
+  - BLD, BREAK, NOP, SLEEP, WDR
+
+The following instructions take 2 or more cycles:
+  - SBI, CBI (these seem like they should be single-cycle, but they aren't!)
+  - ADIW, SBIW
+  - Any multiply (MUL, MULS, MULSU, FMUL, FMULS, FMULSU)
+  - Any jump (RJMP, IJMP, EIJMP take 2 cycles; JMP takes 3 cycles)
+  - Any call (RCALL, ICALL take 3 cycles; EICALL, CALL take 4 cycles)
+  - Any RAM load/store (LD, LDS, LDD, ST, STS, STD, PUSH, POP)
+  - Returns take 3 cycles (RET, RETI)
+  - ROM loads take 3 cycles (LPM, ELPM)
+  - Any branch if the condition is true (BRxx)
+  - Any skip if the condition is true (CPSE, SBRC, SBRS, SBIC, SBRS)
+      (3 cycles if condition is true and next instruction is 2 words)
+  - SPM (see reference manual)
+
+The following instructions take 2 words:
+  - CALL, JMP, LDS, STS
+
+The following instructions have register restrictions:
+  - ADIW SBIW                                    r25:r24, X, Y, Z
+  - ANDI CBR CPI LDI MULS ORI SBCI SBR SER SUBI  r16-r31 only
+  - FMUL FMULS FMULSU MULSU                      r16-r23 only
+  - IJMP EIJMP ICALL EICALL LPM                  Z implied
+  - LDD STD                                      Y and Z only for second operand
+  - SPM                                          see reference manual
+
+The following I/O registers can be accessed with IN, OUT, SBI, CBI:
+  - PINA, DDRA, PORTA, PINB, DDRB, PORTB, PINC, DDRC, PORTC, PIND, DDRD, PORTD
+  - TIFR0, TIFR1, TIFR2, TIFR3
+  - PCIFR, EIFR, EIMSK, GPIOR0, EECR
+
+In addition to the previous I/O registers, the following I/O registers can be
+accessed with IN and OUT:
+  - EEDR, EEAR
+  - GTCCR
+  - TCCR0A, TCCR0B, TCNT0, OCR0A, OCR0B
+  - GPIOR1, GPIOR2
+  - SPCR0, SPSR0, SPDR0
+  - ACSR, OCDR, SMCR, MCUSR, MCUCR, SPMCSR, RAMPZ, SPL, SPH, SREG

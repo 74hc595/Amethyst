@@ -1,0 +1,201 @@
+EESchema Schematic File Version 4
+LIBS:eeprom-board-cache
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L power:VCC #PWR?
+U 1 1 5D7C2DA9
+P 2900 1800
+F 0 "#PWR?" H 2900 1650 50  0001 C CNN
+F 1 "VCC" H 2917 1973 50  0000 C CNN
+F 2 "" H 2900 1800 50  0001 C CNN
+F 3 "" H 2900 1800 50  0001 C CNN
+	1    2900 1800
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5D7C38BD
+P 2900 2400
+F 0 "#PWR?" H 2900 2150 50  0001 C CNN
+F 1 "GND" H 2905 2227 50  0000 C CNN
+F 2 "" H 2900 2400 50  0001 C CNN
+F 3 "" H 2900 2400 50  0001 C CNN
+	1    2900 2400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2500 2200 2300 2200
+Wire Wire Line
+	3300 2100 3500 2100
+Wire Wire Line
+	3300 2000 3500 2000
+Text Label 2300 2200 0    50   ~ 0
+~SS
+Text Label 3500 2000 2    50   ~ 0
+SCK
+Text Label 3500 2100 2    50   ~ 0
+MOSI
+Text Label 3900 2200 2    50   ~ 0
+MISO
+$Comp
+L power:GND #PWR?
+U 1 1 5D7C6D2F
+P 4375 2300
+F 0 "#PWR?" H 4375 2050 50  0001 C CNN
+F 1 "GND" H 4380 2127 50  0000 C CNN
+F 2 "" H 4375 2300 50  0001 C CNN
+F 3 "" H 4375 2300 50  0001 C CNN
+	1    4375 2300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x06 J1
+U 1 1 5D7C4AEA
+P 4575 2100
+F 0 "J1" H 4655 2092 50  0000 L CNN
+F 1 "Conn_01x06" H 4655 2001 50  0000 L CNN
+F 2 "6-pin-smd:Conn_1x06_P2.54mm_Horizontal_SMD" H 4575 2100 50  0001 C CNN
+F 3 "~" H 4575 2100 50  0001 C CNN
+	1    4575 2100
+	1    0    0    1   
+$EndComp
+$Comp
+L power:VCC #PWR?
+U 1 1 5D7C7DA5
+P 4375 1800
+F 0 "#PWR?" H 4375 1650 50  0001 C CNN
+F 1 "VCC" H 4392 1973 50  0000 C CNN
+F 2 "" H 4375 1800 50  0001 C CNN
+F 3 "" H 4375 1800 50  0001 C CNN
+	1    4375 1800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4375 1900 4100 1900
+Wire Wire Line
+	4375 2000 4100 2000
+Wire Wire Line
+	4375 2100 4100 2100
+Wire Wire Line
+	4375 2200 4100 2200
+Text Label 4100 1900 0    50   ~ 0
+MISO
+Text Label 4100 2000 0    50   ~ 0
+SCK
+Text Label 4100 2100 0    50   ~ 0
+MOSI
+Text Label 4100 2200 0    50   ~ 0
+~SS
+$Comp
+L power:VCC #PWR?
+U 1 1 5D7C9DDA
+P 2325 2100
+F 0 "#PWR?" H 2325 1950 50  0001 C CNN
+F 1 "VCC" H 2342 2273 50  0000 C CNN
+F 2 "" H 2325 2100 50  0001 C CNN
+F 3 "" H 2325 2100 50  0001 C CNN
+	1    2325 2100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2500 2100 2325 2100
+$Comp
+L Memory_EEPROM:CAT250xxx U1
+U 1 1 5D7C178E
+P 2900 2100
+F 0 "U1" H 2675 1500 50  0000 C CNN
+F 1 "CAT250xxx" H 3000 1500 50  0000 C CNN
+F 2 "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" H 2900 2100 50  0001 C CNN
+F 3 "http://www.onsemi.com/PowerSolutions/product.do?id=CAT25040" H 2900 2100 50  0001 C CNN
+	1    2900 2100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5D7CCE96
+P 2325 1650
+F 0 "#PWR?" H 2325 1400 50  0001 C CNN
+F 1 "GND" H 2330 1477 50  0000 C CNN
+F 2 "" H 2325 1650 50  0001 C CNN
+F 3 "" H 2325 1650 50  0001 C CNN
+	1    2325 1650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C1
+U 1 1 5D7C2B44
+P 1650 1875
+F 0 "C1" H 1765 1921 50  0000 L CNN
+F 1 "0.1uF" H 1765 1830 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 1688 1725 50  0001 C CNN
+F 3 "~" H 1650 1875 50  0001 C CNN
+	1    1650 1875
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:VCC #PWR?
+U 1 1 5D7C2DF6
+P 1650 1725
+F 0 "#PWR?" H 1650 1575 50  0001 C CNN
+F 1 "VCC" H 1667 1898 50  0000 C CNN
+F 2 "" H 1650 1725 50  0001 C CNN
+F 3 "" H 1650 1725 50  0001 C CNN
+	1    1650 1725
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5D7C2FD2
+P 1650 2025
+F 0 "#PWR?" H 1650 1775 50  0001 C CNN
+F 1 "GND" H 1655 1852 50  0000 C CNN
+F 2 "" H 1650 2025 50  0001 C CNN
+F 3 "" H 1650 2025 50  0001 C CNN
+	1    1650 2025
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2325 1650 2500 1650
+Wire Wire Line
+	2500 1650 2500 2000
+$Comp
+L Device:R R1
+U 1 1 5DB37E10
+P 3625 2050
+F 0 "R1" H 3695 2096 50  0000 L CNN
+F 1 "1k" V 3625 2000 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 3555 2050 50  0001 C CNN
+F 3 "~" H 3625 2050 50  0001 C CNN
+	1    3625 2050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3300 2200 3625 2200
+Wire Wire Line
+	3625 2200 3900 2200
+Connection ~ 3625 2200
+$Comp
+L power:VCC #PWR?
+U 1 1 5DB388FF
+P 3625 1900
+F 0 "#PWR?" H 3625 1750 50  0001 C CNN
+F 1 "VCC" H 3642 2073 50  0000 C CNN
+F 2 "" H 3625 1900 50  0001 C CNN
+F 3 "" H 3625 1900 50  0001 C CNN
+	1    3625 1900
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC

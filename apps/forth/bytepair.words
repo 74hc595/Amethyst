@@ -1,0 +1,52 @@
+; alias to match "X^Y" byte pair literal syntax
+dictentry_colon "^"
+op mergebytes
+dictentryend
+
+dictentry_colon "XY>"
+op splitbytes
+dictentryend
+
+dictentry_colon ">XY"
+op mergebytes
+dictentryend
+
+dictentry_colon ">X"
+op tolowbyte
+dictentryend
+
+dictentry_colon ">Y"
+op tohighbyte
+dictentryend
+
+dictentry_colon "XC"
+op lowbyte
+dictentryend
+
+dictentry_colon "YC"
+op highbyte
+dictentryend
+
+dictentry_colon "XY+"
+op bytepairplus
+dictentryend
+
+dictentry_colon "XY-"
+op bytepairminus
+dictentryend
+
+dictentry_colon "X+"
+op lplus
+dictentryend
+
+dictentry_colon "Y+"
+op hplus
+dictentryend
+
+dictentry_colon "XNEGATE"
+op lnegate
+dictentryend
+
+dictentry_colon "YNEGATE"
+op hnegate
+dictentryend

@@ -1,0 +1,119 @@
+.macro mark, opc
+.byte OP_mark
+.byte OP_\opc
+.endm
+
+dictentry_compileonly "IF"
+mark zbranchfwd ; push current location onto stack and compile dummy (0BRANCH)
+dictentryend
+
+dictentry_compileonly "AHEAD"
+mark branchfwd  ; push current location onto stack and compile dummy (BRANCH)
+dictentryend
+
+dictentry_compileonly "ELSE"
+mark branchfwd  ; push current location onto stack and compile dummy (BRANCH)
+op swap         ; bring address of first (0BRANCH) back to top
+opx resolve     ; resolve previous (0BRANCH)
+dictentryend
+
+dictentry_compileonly "THEN"
+opx resolve     ; resolve relative branch
+dictentryend
+
+dictentry_compileonly "BEGIN"
+op here
+dictentryend
+
+dictentry_compileonly "AGAIN"
+mark branchback ; compile dummy (BRANCH)
+opx bresolve    ; resolve backward branch
+dictentryend
+
+dictentry_compileonly "UNTIL"
+mark zbranchback        ; compile dummy (0BRANCH) instruction
+opx bresolve            ; resolve backward branch
+dictentryend
+
+dictentry_compileonly "WHILE"
+mark zbranchfwd ; push address of dummy (0BRANCH)
+op swap        ; bring address of loop start back to top
+dictentryend
+
+dictentry_compileonly "REPEAT"
+mark branchback        ; compile dummy (BRANCH) instruction to start of loop
+opx bresolve             ; resolve backward branch to start of loop
+opx resolve             ; resolve forward (0BRANCH) to end of loop
+dictentryend
+
+dictentry_compileonly_rstack "DO"
+op zero         ; push a 0 on return stack to mark end of leave stack
+op tor
+op litccomma
+.byte OP_twotor ; compile a (DO) instruction
+op here         ; push loop start address
+dictentryend
+
+dictentry_compileonly_rstack "?DO"
+op zero         ; push a 0 on return stack to mark end of leave stack
+op tor
+mark qdo        ; push address of dummy (BRANCH) onto leave stack (return stack)
+op tor
+op here         ; push loop start address
+dictentryend
+
+dictentry_compileonly_rstack "XY-DO"
+op zero         ; push a 0 on return stack to mark end of leave stack
+op tor
+op litccomma
+.byte OP_zero   ; compile an instruction that pushes a 0 on the stack at runtime
+op litccomma
+.byte OP_twotor ; compile a (DO) instruction
+op here         ; push loop start address
+dictentryend
+
+dictentry_compileonly_rstack "LEAVE"
+op litccomma            ; compile 2>R to drop loop context
+.byte OP_twordrop
+mark branchfwd  ; push address of dummy (BRANCH) onto leave stack (return stack)
+op tor
+dictentryend
+
+dictentry_compileonly_rstack "LOOP"
+mark loop       ; compile test and branch to start of loop
+opx bresolve
+opx rake
+dictentryend
+
+dictentry_compileonly_rstack "+LOOP"
+mark plusloop   ; compile test and branch to start of loop
+opx bresolve
+opx rake
+dictentryend
+
+dictentry_compileonly_rstack "XY-LOOP"
+mark xyloop     ; compile test and branch to start of loop
+opx bresolve
+opx rake
+dictentryend
+
+dictentry_compileonly_rstack "CASE"
+op zero
+op tor          ; push a 0 on return stack to mark end of leave stack
+dictentryend
+
+dictentry_compileonly "OF"
+mark of         ; compile an (OF) and put address of its branch offset on the stack
+dictentryend
+
+dictentry_compileonly_rstack "ENDOF"
+mark branchfwd  ; compile (BRANCH) to end of case
+op tor          ; put address of its branch offset on the leave stack (return stack)
+opx resolve     ; resolve forward branch of previous (OF)
+dictentryend
+
+dictentry_compileonly_rstack "ENDCASE"
+op litccomma    ; compile a DROP to delete the case selector
+.byte OP_drop
+opx rake
+dictentryend

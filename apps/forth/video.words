@@ -1,0 +1,138 @@
+; push address of screen buffer
+dictentry_colon "SCREEN"
+.byte OP_fetchlithi, HIGHADDR(screen_ptr)
+dictentryend
+
+; set screen buffer address
+dictentry_colon "SCREEN!"
+.byte OP_storelithi, HIGHADDR(screen_ptr)
+dictentryend
+
+; get current font/tilemap
+dictentry_colon "FONT"
+.byte OP_fetchlithi, HIGHADDR(tilemap_hi)
+dictentryend
+
+; set current font/tilemap
+dictentry_colon "FONT!"
+.byte OP_storelithi, HIGHADDR(tilemap_hi)
+dictentryend
+
+; push default font
+dictentry_colon "DEFAULT-FONT"
+l16 hi8(amscii_font_8x8), hh8(amscii_font_8x8)
+dictentryend
+
+dictentry_colon "FONT:"
+op header      ; get name, create link and header in name space
+.byte FL_CONSTANT
+opx makefont
+dictentryend
+
+; push byte address of globalcolor
+dictentry_colon "GCOLOR"
+laddr globalcolor
+dictentryend
+
+; COLOR> ( -- | R: -- c ) save current color on return stack
+dictentry_colon_rstack "COLOR>"
+op getcolor
+op tor
+dictentryend
+
+; >COLOR ( -- | R: c -- ) restore current color from return stack
+dictentry_colon_rstack ">COLOR"
+op rfrom
+op setcolor
+dictentryend
+
+; >COLOR> ( c1 -- | R: -- c0 ) set current color and save previous color on return stack
+dictentry_colon_rstack ">COLOR>"
+op getcolor
+op tor
+op setcolor
+dictentryend
+
+; number of lines per screen
+dictentry_colon "YRES"
+.byte OP_cfetchlithi, HIGHADDR(linesperscreen)
+dictentryend
+
+; TSET ( c xy -- ) set character of text cell at xy, keeping same color
+dictentry_colon "TSET"
+op xystore
+dictentryend
+
+; HPSET ( c xy -- ) set color of pixel at xy in high-color bitmap mode
+dictentry_colon "HPSET"
+op xystore
+dictentryend
+
+; XMAX ( -- xy ) x coordinate of the pixel in the last column of the screen
+dictentry_colon "XMAX"
+op xres
+op oneminus
+dictentryend
+
+; YMAX ( -- xy ) y coordinate of the pixel in the last row of the screen
+dictentry_colon "YMAX"
+.byte OP_cfetchlithi, HIGHADDR(linesperscreen)
+op oneminus
+dictentryend
+
+.macro colorword value, name
+  dictentry_colon "\name"
+  l8 \value
+  dictentryend
+  dictentry_colon "\name!"
+  l8 \value
+  op setcolor
+  dictentryend
+.endm
+
+colorword 0,  BLACK
+colorword 1,  D.GREEN
+colorword 2,  D.BLUE
+colorword 3,  BLUE
+colorword 4,  RED
+colorword 5,  GRAY
+colorword 6,  PURPLE
+colorword 7,  L.BLUE
+colorword 8,  BROWN
+colorword 9,  GREEN
+colorword 10, GREY
+colorword 11, AQUA
+colorword 12, ORANGE
+colorword 13, YELLOW
+colorword 14, PINK
+colorword 15, WHITE
+colorword 16, BLUE/D.GREEN
+colorword 17, AQUA/D.GREEN
+colorword 18, YELLOW/D.GREEN
+colorword 19, WHITE/D.GREEN
+colorword 20, BLUE/D.BLUE
+colorword 21, AQUA/D.BLUE
+colorword 22, PINK/D.BLUE
+colorword 23, WHITE/D.BLUE
+colorword 24, BLUE/RED
+colorword 25, YELLOW/RED
+colorword 26, PINK/RED
+colorword 27, WHITE/RED
+colorword 28, AQUA/BROWN
+colorword 29, YELLOW/BROWN
+colorword 30, PINK/BROWN
+colorword 31, WHITE/BROWN
+colorword 32, WHITE/BLUE
+colorword 33, WHITE/GRAY
+colorword 34, WHITE/PURPLE
+colorword 35, WHITE/GREEN
+colorword 36, WHITE/GREY
+colorword 37, WHITE/ORANGE
+
+
+.macro modeword value, name
+  dictentry_colon "\name"
+  l8 \value
+  opx gmode
+  dictentryend
+.endm

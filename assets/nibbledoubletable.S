@@ -1,0 +1,28 @@
+.section .progmem.assets
+.balign 256
+.global lowernibbledoubletable
+.type lowernibbledoubletable, @object
+lowernibbledoubletable:
+.rept 16
+.byte 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF
+.endr
+
+.global uppernibbledoubletable
+.type uppernibbledoubletable, @object
+uppernibbledoubletable:
+.space 16, 0x00
+.space 16, 0x11
+.space 16, 0x22
+.space 16, 0x33
+.space 16, 0x44
+.space 16, 0x55
+.space 16, 0x66
+.space 16, 0x77
+.space 16, 0x88
+.space 16, 0x99
+.space 16, 0xAA
+.space 16, 0xBB
+.space 16, 0xCC
+.space 16, 0xDD
+.space 16, 0xEE
+.space 16, 0xFF

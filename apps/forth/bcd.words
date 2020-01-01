@@ -1,0 +1,68 @@
+
+
+; BCD. ( u -- ) print binary-coded-decimal number as 4 hex digits (with leading zeros)
+; this is just an alias for H.
+dictentry_colon "BCD."
+op hdot
+dictentryend
+
+; DBCD. ( d -- ) print double-cell binary-coded-decimal number as 8 hex digits
+; (with leading zeros). This is just an alias for DH.
+dictentry_colon "DBCD."
+op hdot
+op hdot
+dictentryend
+
+; BCD2* ( u1 -- u2 ) multiply binary-coded-decimal number by 2
+dictentry_colon "BCD2*"
+op dup
+opx bcdplus
+dictentryend
+
+; BCD10* ( u1 -- u2 ) multiply binary-coded-decimal number by 10
+dictentry_colon "BCD10*"
+l8 4
+opx lshift
+dictentryend
+
+; BCD10/ ( u1 -- u2 ) divide binary-coded-decimal number by 10 (truncating)
+dictentry_colon "BCD10/"
+l8 4
+opx rshift
+dictentryend
+
+; BCD100* ( u1 -- u2 ) multiply binary-coded-decimal number by 100
+dictentry_colon "BCD100*"
+op twofivesixstar
+dictentryend
+
+; BCD100/ ( u1 -- u2 ) divide binary-coded-decimal number by 100 (truncating)
+dictentry_colon "BCD100/"
+op highbyte
+dictentryend
+
+; BCD100MOD ( u1 -- u2 ) binary-coded-decimal modulo 100
+dictentry_colon "BCD100MOD"
+op lowbyte
+dictentryend
+
+; BCD100/MOD ( u1 -- rem quot ) binary-coded-decimal remainder and quotient after
+; division by 100
+dictentry_colon "BCD100/MOD"
+op splitbytes
+dictentryend
+
+; BCD>ASCII ( u -- d ) push 4-byte ASCII representation of the binary-coded-decimal
+; number on top of the stack. Just an alias for U>HEX.
+dictentry_colon "BCD>ASCII"
+opx utohex
+dictentryend
+
+; BCD>ASCII! ( u c-addr -- ) store 4-byte ASCII representation of a
+; binary-coded-decimal number to memory
+dictentry_colon "BCD>ASCII!"
+op swap     ; ( c-addr u -- )
+opx utohex  ; ( c-addr u1 u2 -- )
+op rot
+op twostore
+dictentryend

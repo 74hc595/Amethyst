@@ -1,0 +1,17 @@
+dictentry_colon "SEED"
+laddr seed
+dictentryend
+
+; CHOOSE ( u1 -- u2 ) return random number in the range (0 <= u2 < u1)
+; this is from Starting Forth. : CHOOSE RANDOM U* SWAP DROP ;
+dictentry_colon "CHOOSE"
+op random
+opx umstar
+op nip
+dictentryend
+
+; COIN-FLIP ( -- flag ) return a random boolean value (true or false)
+dictentry_colon "COIN-FLIP"
+op random
+op lt0
+dictentryend

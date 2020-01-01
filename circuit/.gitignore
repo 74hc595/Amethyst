@@ -1,0 +1,8 @@
+*.gbr
+*.bak
+*-cache.lib
+*.drl
+*.net
+*.kicad_pcb-bak
+*.sch-bak
+fp-info-cache

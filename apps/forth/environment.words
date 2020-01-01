@@ -1,0 +1,60 @@
+enventry "/COUNTED_STRING"
+l8 255
+enventryend
+
+enventry "/HOLD"
+l8 FORTH_HOLD_BUFFER_SIZE
+enventryend
+
+enventry "/PAD"
+l8 FORTH_PAD_SIZE
+enventryend
+
+enventry "ADDRESS-UNIT-BITS"
+l8 8
+enventryend
+
+enventry "MAX-CHAR"
+l8 255
+enventryend
+
+enventry "MAX-D"
+op minus1
+op minus1
+op utwoslash
+enventryend
+
+enventry "MAX-N"
+op minus1
+op utwoslash
+enventryend
+
+enventry "MAX-U"
+op minus1
+enventryend
+
+enventry "MAX-UD"
+op minus1
+op minus1
+enventryend
+
+; regular division is round-to-zero, not floored
+enventry "FLOORED"
+op zero
+enventryend
+
+enventry "RETURN-STACK-CELLS"
+l8 forth_rstack_cells
+enventryend
+
+enventry "STACK-CELLS"
+l8 forth_dstack_cells
+enventryend
+
+; ( -- ver-patch ver-minor ver-major )
+#include "forth_version.h"
+enventry "VERSION"
+l8 VERSION_PATCH
+l8 VERSION_MINOR
+l8 VERSION_MAJOR
+enventryend

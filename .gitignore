@@ -1,0 +1,17 @@
+*.pyc
+*.elf
+*.hex
+*.o
+*.lst
+*.map
+*.swp
+*.gbr
+*.drl
+build
+junk
+stackusage.txt
+sim/amsim
+.vscode/ipch
+scripts/*.jpg
+scripts/*.png
+scripts/*.bin

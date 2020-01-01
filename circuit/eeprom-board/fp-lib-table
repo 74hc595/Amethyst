@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name 6-pin-smd)(type KiCad)(uri /Users/matt/Code/avr-colorvideo/circuit/6-pin-smd.pretty)(options "")(descr ""))
+)

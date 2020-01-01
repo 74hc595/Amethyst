@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+This launchd plist allows you to log into a Mac using a serial terminal.
+Tested on macOS 10.14.2.
+Many thanks to my old buddy mdille3:
+  http://www.club.cc.cmu.edu/~mdille3/doc/mac_osx_serial_console.html
+and Mikey T.K. on stackoverflow:
+  https://superuser.com/questions/1059744/serial-console-login-on-osx
+
+(Note: you will probably need to use sudo for some of these steps)
+
+1. Add these lines to /etc/gettytab:
+
+usbserial:\
+  :np:im=\r\n:sp#57600:tt=vt100:
+
+(where `57600` is your desired baud rate.)
+
+2. Change the `cu.usbserial-XXXX` line to the correct ID for your serial device
+
+3. cp serialconsole.plist /Library/LaunchDaemons/
+
+4. chown root:wheel /Library/LaunchDaemons/serialconsole.plist
+
+5. launchctl bootstrap system /Library/LaunchDaemons/serialconsole.plist
+
+To stop:
+
+launchctl bootout system /Library/LaunchDaemons/serialconsole.plist
+
+-->
+<plist version="1.0">
+<dict>
+        <key>Label</key>
+        <string>serialconsole</string>
+        <key>ProgramArguments</key>
+        <array>
+                <string>/usr/libexec/getty</string>
+                <string>usbserial</string>
+                <string>cu.usbserial-DN03LPEQ</string>
+        </array>
+        <key>KeepAlive</key>
+        <true/>
+</dict>
+</plist>
+

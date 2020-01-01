@@ -1,0 +1,230 @@
+dictentry_colon ":"
+op header       ; create link and header in name space
+.byte FL_COLON|FL_CREATE_SMUDGED|FL_SAVE_STACK_PTRS
+enter_compile_mode
+dictentryend
+
+; create a new compiling word (inline in name space)
+dictentry_colon "::"
+op header       ; create link and header in name space, but don't claim any code space
+.byte FL_COMPILER|FL_CREATE_SMUDGED|FL_SAVE_STACK_PTRS
+enter_compile_mode
+dictentryend
+
+; create a new immediate word (inline in name space)
+dictentry_colon "I:"
+op header       ; create link and header in name space, but don't claim any code space
+.byte FL_COMBINED|FL_CREATE_SMUDGED|FL_SAVE_STACK_PTRS
+op litccomma
+.byte 1         ; point isem to csem
+enter_compile_mode
+dictentryend
+
+; create a new compile-only word (inline in name space)
+dictentry_colon "C:"
+op header       ; create link and header in name space, but don't claim any code space
+.byte FL_COMBINED|FL_CREATE_SMUDGED|FL_SAVE_STACK_PTRS
+op litccomma
+.byte 0         ; no interpretation semantics
+enter_compile_mode
+dictentryend
+
+dictentry_colon "VARIABLE"
+op header       ; get name, create link/header
+.byte FL_VARIABLE
+op zero         ; default value of 0
+op comma        ; allocate one word of code space and set value to 0
+dictentryend
+
+dictentry_colon "CVARIABLE"
+op header      ; get name, create link/header
+.byte FL_VARIABLE
+op litccomma    ; allocate one byte of code space and set value to 0
+.byte 0         ; default value of 0
+dictentryend
+
+dictentry_colon "2VARIABLE"
+op header       ; get name, create link/header
+.byte FL_VARIABLE
+op zero        ; allocate two words of code space, default value is 0
+op comma
+op zero
+op comma
+dictentryend
+
+dictentry_colon "BUFFER:"
+op header
+.byte FL_VARIABLE
+op allot
+dictentryend
+
+; EE>BUF: ( e-addr len -- ) allot buffer with contents of eeprom
+dictentry_colon "EE>BUF:"
+op header
+.byte FL_VARIABLE
+op here                 ; ( e-addr len ram-addr -- )
+op over                 ; ( e-addr len ram-addr len -- )
+op allot                ; ( e-addr len ram-addr -- )
+op swap                 ; ( e-addr ram-addr len -- )
+opx eetoram             ; ( -- )
+dictentryend
+
+dictentry_colon "CONSTANT"
+op header      ; get name, create link and header in name space
+.byte FL_CONSTANT
+op comma
+dictentryend
+
+dictentry_colon "2CONSTANT"
+op header      ; get name, create link and header in name space
+.byte FL_2CONSTANT
+op comma       ; store 2-word constant value on TOS inline in name space
+op comma
+dictentryend
+
+; parent semantics of words created with VALUE
+export_xt doval
+dictheader "(DOVAL)"
+.word pm(romdict_interpret_bytecode)
+.word pm(romdict_interpret_bytecode_compsem)
+dictentry_interpretation_semantics
+        op fetch        ; get value address
+        op fetch        ; get value
+dictentry_compilation_semantics
+        op litccomma
+        .byte OP_fetchlit  ; compile a "fetch literal" instruction
+        op fetch        ; compile value address
+        op comma
+dictentryend
+
+; parent semantics of words created with 2VALUE
+export_xt do2val
+dictheader "(DO2VAL)"
+.word pm(romdict_interpret_bytecode)
+.word pm(romdict_interpret_bytecode_compsem)
+dictentry_interpretation_semantics
+        op fetch        ; get value address
+        op twofetch     ; get value
+dictentry_compilation_semantics
+        ; Compile the address as a literal, then compile a 2@ instruction.
+        ; (uses one less byte than two fetch-literals)
+        op litccomma
+        .byte OP_lit16
+        op fetch
+        op comma
+        op litccomma
+        .byte OP_twofetch
+dictentryend
+
+; parent semantics of words created with DEFER
+export_xt dodefer
+dictheader "(DODEFER)"
+.word pm(romdict_interpret_bytecode)
+.word pm(romdict_interpret_bytecode_compsem)
+dictentry_interpretation_semantics
+        op fetch        ; get xt address
+        op fetch        ; get xt
+        op execute
+dictentry_compilation_semantics
+        op litccomma
+        .byte OP_fetchlit       ; compile a "fetch literal" instruction
+        op fetch                ; compile xt address
+        op comma
+        op litccomma            ; compile an EXECUTE instruction
+        .byte OP_execute
+dictentryend
+
+; parent semantics of words created with MARKER
+export_xt domarker
+dictheader "(DOMARKER)"
+.word pm(romdict_interpret_bytecode)
+.word pm(romdict_interpret_bytecode_compsem)
+dictentry_interpretation_semantics
+        op dup
+        op twoplus
+        op twoplus
+        op twofetch
+        op rot
+        op twofetch
+        opx markerfrom
+dictentry_compilation_semantics
+        ccall compile_marker
+        op drop
+dictentryend
+
+dictentry_colon "VALUE"
+op makechild    ; get name, create link and header in name space
+.word xt_of_doval
+.byte OP_fetchlithi, HIGHADDR(forth_cp) ; address where the value will be
+op comma        ; store the value's address in the header
+op xcomma       ; store default value
+dictentryend
+
+dictentry_colon "2VALUE"
+op makechild    ; get name, create link and header in name space
+.word xt_of_do2val
+.byte OP_fetchlithi, HIGHADDR(forth_cp) ; address where the value will be
+op comma       ; store the value's address in the header
+op xcomma   ; store default value
+op xcomma
+dictentryend
+
+dictentry_colon "DEFER"
+op makechild    ; get name, create link and header in name space
+.word xt_of_dodefer
+.byte OP_fetchlithi, HIGHADDR(forth_cp) ; address where the xt will be
+op comma       ; initialized to current code space pointer
+op zero        ; default action is to do nothing
+op xcomma
+dictentryend
+
+dictentry_colon "\115\105\117\127"
+op litstr
+.byte 0005,0115,0145,0157,0167,0040
+op type
+dictentryend
+
+dictentry_colon "MARKER"
+opx tomarker    ; get dictionary snapshot (4 cells)
+op makechild    ; get name, create link and header in name space
+.word xt_of_domarker
+opx markercomma ; write dictionary snapshot into body
+dictentryend
+
+; CREATE ( -- ) reads a name from the input stream, and creates a new child word
+; with default behavior. (A newly CREATEd word behaves the same as an FL_VARIABLE
+; word, it just takes up more space.)
+dictentry_colon "CREATE"
+op header
+.byte FL_CHILD
+dictentryend
+
+; CREATE:: ( -- ) reads a name from the input stream, and creates a new
+; compiler child word with default behavior.
+dictentry_colon "CREATE::"
+op header
+.byte FL_COMPILER_CHILD
+dictentryend
+
+dictentry_colon "FORGET"
+op parsename
+opx findname
+opx forgetname
+dictentryend
+
+; LITERAL ( n -- ) compile top-of-stack value into the current definition as
+; a literal
+dictentry_compileonly "LITERAL"
+ccall compile_literal
+op drop
+dictentryend
+
+dictentry_compileonly "2LITERAL"
+ccall compile_double_literal
+op twodrop
+dictentryend
+
+dictentry_compileonly "SLITERAL"
+ccall compile_string
+op twodrop
+dictentryend
