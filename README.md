@@ -30,7 +30,7 @@ uploaded to it without a specialized programming device.
 - Four SPI expansion ports for peripherals, controllers, and storage devices
 - Only 6 chips (ATmega1284, FT320X, 2x 74HC157, 2x 74HC166)
 
-**TODO 12/31/19: add more detailed docs, enclosure design, and BOM**
+**TODO 1/5/20: add more detailed docs, instructions, and BOM**
 
 
 ## About
